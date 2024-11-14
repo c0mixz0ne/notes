@@ -1,10 +1,12 @@
 import './assets/main.less'
 
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
 const app = createApp(App)
+const pinia = createPinia()
 
 app.use(router)
 
@@ -17,4 +19,5 @@ router.afterEach((to) => {
   }
 })
 
+app.use(pinia)
 app.mount('#app')
