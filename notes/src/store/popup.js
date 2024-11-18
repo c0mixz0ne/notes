@@ -18,11 +18,11 @@ export const usePopupStore = defineStore('popup', {
     },
   },
   getters: {
-    getIsPopupOpen(state) {
-      return state.popup
+    getIsPopupOpen() {
+      return this.popup
     },
-    getIsLoading(state) {
-      return state.isLoading
+    getIsLoading() {
+      return this.isLoading
     },
   },
 })

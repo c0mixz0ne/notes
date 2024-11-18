@@ -3,7 +3,6 @@
     <slot> Кнопка </slot>
   </button>
 </template>
-<script setup></script>
 <style lang="less" scoped>
 @import '../assets/text.less';
 

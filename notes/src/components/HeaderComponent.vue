@@ -12,6 +12,13 @@
   </header>
 </template>
 <script setup>
+import { computed } from 'vue'
+
+import { useAuthStore } from '@/store/user'
+import { usePopupStore } from '@/store/popup'
+const authStore = useAuthStore()
+const popupStore = usePopupStore()
+
 import LogoIcon from '@/assets/svg-components/LogoIcon.vue'
 import LogoMobIcon from '@/assets/svg-components/LogoMobIcon.vue'
 import LoginIcon from '@/assets/svg-components/LoginIcon.vue'
@@ -19,13 +26,11 @@ import LoginIcon from '@/assets/svg-components/LoginIcon.vue'
 import ButtonComponent from './ButtonComponent.vue'
 import UserComponent from './UserComponent.vue'
 
-import { usePopupStore } from '@/store/popup'
-
-const popupStore = usePopupStore()
-
 const openPopup = (type) => {
   popupStore.setIsPopupOpen(type, true)
 }
+
+const isAuth = computed(() => { return authStore.getAuthUser.email})
 </script>
 <style scoped>
 .header {

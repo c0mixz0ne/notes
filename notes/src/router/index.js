@@ -9,18 +9,35 @@ const router = createRouter({
       name: 'main',
       component: MainView,
       meta: {
-        title: 'Notes',
+        title: 'Notes : Main',
       },
     },
     {
       path: '/notes',
       name: 'notes',
-      // component: () => import('../views/AboutView.vue'),
+      // dynamic chunk
+      component: () => import('../views/NotesView.vue'),
       meta: {
-        title: 'Notes',
+        title: 'Notes : List',
+        requiresAuth: true
       },
     },
   ],
-})
+});
+
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('token');
+  if (isAuthenticated && to.path === '/') {
+    next({ path: '/notes' });
+  }
+
+  else if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+    next({ path: '/' });
+  }
+
+  else {
+    next();
+  }
+});
 
 export default router

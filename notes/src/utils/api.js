@@ -1,7 +1,5 @@
 import axios from 'axios'
-
-// import user from '@/store/user.js'
-// import notes from '@/store/notes.js'
+import { useAuthStore } from '@/store/user';
 
 const url = import.meta.env.VITE_API_URL
 
@@ -11,13 +9,13 @@ export const registration = async (data) => {
 }
 
 export const auth = async () => {
+  const authStore = useAuthStore()
   if (localStorage.getItem('token')) {
     const token = localStorage.getItem('token')
     const { data } = await axios.get(`${url}/auth`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    user.dispatch('setAuthUser', { email: data.email })
-
+    authStore.setAuthUser({ email: data.email })
     return data
   }
 }
@@ -31,7 +29,9 @@ export const login = async (data) => {
 }
 
 export const logout = () => {
+  const authStore = useAuthStore()
   localStorage.removeItem('token')
-  user.dispatch('setAuthUser', {})
-  notes.dispatch('setNotes', [])
+  authStore.setAuthUser({})
+  // user.dispatch('setAuthUser', {})
+  // notes.dispatch('setNotes', [])
 }

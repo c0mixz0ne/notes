@@ -1,19 +1,29 @@
 <template>
-  <div class="input-wrapper">
-    <label for="email"> {{ title }} </label>
-    <input
-      :class="{ error: errorMessage }"
-      :placeholder="placeholder"
-      :id="id"
-      :type="inputType"
-      :autocomplete="autocomplete"
-      :value="inputValue"
-      @input="handler"
-    />
+  <div class="input">
+    <label :for="id"> {{ title }} </label>
+    <div class="input-wrapper">
+      <input
+        :class="{ error: errorMessage }"
+        :placeholder="placeholder"
+        :id="id"
+        :type="getType"
+        :autocomplete="autocomplete"
+        :value="inputValue"
+        @input="handler"
+      />
+      <button @click="toggle" v-if="inputType === 'password'">
+        <ShowPassIcon v-if="inputType === 'password' && !isVisible" />
+        <HidePassIcon v-if="inputType === 'password' && isVisible"/>
+      </button>
+    </div>
     <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
   </div>
 </template>
 <script setup>
+import { ref, computed } from 'vue';
+import ShowPassIcon from '@/assets/svg-components/ShowPassIcon.vue';
+import HidePassIcon from '@/assets/svg-components/HidePassIcon.vue';
+
 const props = defineProps({
   title: {
     type: String,
@@ -50,11 +60,24 @@ const emits = defineEmits(['updateInput'])
 const handler = (e) => {
   emits('updateInput', e.target.value)
 }
+
+const isVisible = ref(false)
+
+const toggle = () => {
+  isVisible.value = !isVisible.value
+}
+
+const getType = computed(()=> {
+  return props.inputType === 'password' ?
+  isVisible.value ? 'text' : 'password' :
+  'text'
+})
+
 </script>
 <style lang="less" scoped>
 @import '../assets/text.less';
 
-.input-wrapper {
+.input{
   margin-bottom: 24px;
   label,
   input {
@@ -98,6 +121,25 @@ const handler = (e) => {
   .error-message {
     color: var(--red);
     padding: 0 25px;
+  }
+
+  .input-wrapper{
+    position: relative;
+    button{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      padding: 0;
+    }
   }
 }
 </style>

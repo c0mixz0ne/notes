@@ -1,8 +1,8 @@
 <template>
-  <div v-if="isPopupOpen" class="popup-wrapper" @click="close('login')">
+  <div v-if="isPopupOpen" class="popup-wrapper" @click="close">
     <div class="popup" @click.stop>
       <div class="popup-content">
-        <ButtonComponent class="round close-popup" @click="close('login')">
+        <ButtonComponent class="round close-popup" @click="close">
           <CrossIcon />
         </ButtonComponent>
         <slot name="title"></slot>
@@ -13,11 +13,13 @@
   </div>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { usePopupStore } from '@/store/popup'
 import CrossIcon from '@/assets/svg-components/CrossIcon.vue'
 
 import ButtonComponent from './ButtonComponent.vue'
+
+const emits = defineEmits(['close-popup'])
 
 const popupStore = usePopupStore()
 
@@ -27,9 +29,14 @@ const isPopupOpen = computed(() => popupIsOpen.isOpen)
 
 const isLoading = computed(() => popupStore.getIsLoading)
 
-const close = (popup) => {
-  popupStore.setIsPopupOpen(popup, false)
+const close = () => {
+  popupStore.setIsPopupOpen(null, false)
+  emits('close-popup')
 }
+
+const overflowHidden = onMounted(() => document.body.style.overflow = 'hidden')
+
+const overflowauto = onUnmounted(() => document.body.style.overflow = 'auto')
 </script>
 <style lang="less" scoped>
 @import '../assets/text.less';

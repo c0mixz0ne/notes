@@ -13,14 +13,16 @@
       </div>
     </section>
   </main>
-  <PopupComponent>
+  <PopupComponent
+  v-if="popupIsOpen.type === loginData.name && !isAuth"
+  @close-popup="resetPopupFields(loginData); resetPopupErrors(loginData)">
     <template #title>
       <div class="popup-title">
         {{ loginData.title }}
       </div>
     </template>
     <template #content>
-      <form class="popup-form">
+      <form @submit.prevent class="popup-form">
         <InputComponent
           v-for="(input, index) in loginData.inputs"
           :key="input.title"
@@ -39,7 +41,7 @@
       <div class="popup-actions">
         <div class="popup-registration">
           <span> {{ loginData.question }} </span>
-          <LinkComponent @click="openPopup">
+          <LinkComponent @click="openPopup(registrationData)">
             {{ loginData.popupLinkName }}
           </LinkComponent>
         </div>
@@ -51,21 +53,64 @@
       <div v-if="loginData.errorMessage" class="popup-error">{{ loginData.errorMessage }}</div>
     </template>
   </PopupComponent>
+  <PopupComponent
+  v-if="popupIsOpen.type === registrationData.name && !isAuth"
+  @close-popup="resetPopupFields(registrationData); resetPopupErrors(registrationData)">
+    <template #title>
+      <div class="popup-title">
+        {{ registrationData.title }}
+      </div>
+    </template>
+    <template #content>
+      <form @submit.prevent class="popup-form">
+        <InputComponent
+          v-for="(input, index) in registrationData.inputs"
+          :key="input.title"
+          :title="input.title"
+          :placeholder="input.placeholder"
+          :input-value="input.value"
+          :input-type="input.type"
+          :error-message="input.error"
+          :id="input.id"
+          :autocomplete="input.autocomplete"
+          @updateInput="updateInputValue($event, index, registrationData)"
+        />
+      </form>
+    </template>
+    <template #action="{ isLoading }">
+      <div class="popup-actions">
+        <div class="popup-registration">
+          <span> {{ registrationData.question }} </span>
+          <LinkComponent @click="openPopup(loginData)">
+            {{ registrationData.popupLinkName }}
+          </LinkComponent>
+        </div>
+        <ButtonComponent :class="{ loading: isLoading }" @click="registrationData.method">
+          <span v-if="!isLoading">{{ registrationData.button }}</span>
+          <span v-if="isLoading" class="loader"></span>
+        </ButtonComponent>
+      </div>
+      <div v-if="registrationData.errorMessage" class="popup-error">{{ registrationData.errorMessage }}</div>
+    </template>
+  </PopupComponent>
 </template>
 <script setup>
 import { usePopupStore } from '@/store/popup'
+import { useAuthStore } from '@/store/user'
+
 import router from '@/router'
 
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import PopupComponent from '@/components/PopupComponent.vue'
 import LinkComponent from '@/components/LinkComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
 
 import validate from '@/utils/validate'
-import { login, auth } from '@/utils/api'
+import { login, auth, registration } from '@/utils/api'
 
 const popupStore = usePopupStore()
+const authStore = useAuthStore()
 
 const toLogin = async () => {
   const [email, password] = loginData.inputs
@@ -85,7 +130,7 @@ const toLogin = async () => {
       return
     }
 
-    resetErrors(loginData)
+    resetPopupErrors(loginData)
     popupStore.setIsLoading(true)
     await login(data)
     popupStore.setIsLoading(false)
@@ -96,8 +141,47 @@ const toLogin = async () => {
     popupStore.setIsLoading(false)
   }
 }
+
 const toRegistration = async () => {
-  console.log(1)
+  const [email, password, secondPassword] = registrationData.inputs
+
+  const data = {
+    email: email.value.toLowerCase(),
+    password: password.value,
+    confirm_password: secondPassword.value
+  }
+
+  const emailError = validate('email', email.value)
+  const passwordError = validate('password', password.value)
+  const confirmError = validate('confirm', secondPassword.value)
+
+  try {
+    if (emailError || passwordError || confirmError) {
+      registrationData.inputs[0].error = emailError
+      registrationData.inputs[1].error = passwordError
+      registrationData.inputs[2].error = confirmError
+      return
+    }
+    resetPopupErrors(registrationData)
+    popupStore.setIsLoading(true)
+    await registration(data)
+    popupStore.setIsLoading(false)
+    popupStore.setIsPopupOpen(null, false)
+    router.push('/notes')
+    } catch (err) {
+      registrationData.errorMessage = err.response.data.message
+      popupStore.setIsLoading(false)
+    }
+}
+
+const isAuth = computed(() => { return authStore.getAuthUser.email })
+
+const popupIsOpen = computed(() => popupStore.getIsPopupOpen)
+
+const openPopup = (popup) => {
+  popupStore.setIsPopupOpen(popup.name, true)
+  resetPopupErrors(popup)
+  resetPopupFields(popup)
 }
 
 const updateInputValue = (value, index, popup) => {
@@ -115,8 +199,7 @@ const loginData = reactive({
       value: '',
       isValid: true,
       error: '',
-      id: 'email',
-      autocomplete: 'current-password',
+      id: 'email-login'
     },
     {
       title: 'Пароль',
@@ -125,8 +208,7 @@ const loginData = reactive({
       value: '',
       isValid: true,
       error: '',
-      id: 'password',
-      autocomplete: 'new-password',
+      id: 'password-login',
     },
   ],
   question: 'У вас нет аккаунта?',
@@ -147,6 +229,7 @@ const registrationData = reactive({
       type: 'text',
       value: '',
       error: '',
+      id: 'email-registration',
     },
     {
       title: 'Пароль',
@@ -154,6 +237,7 @@ const registrationData = reactive({
       type: 'password',
       value: '',
       error: '',
+      id: 'password-registration',
     },
     {
       title: 'Пароль ещё раз',
@@ -161,20 +245,27 @@ const registrationData = reactive({
       type: 'password',
       value: '',
       error: '',
+      id: 'second-password-registration'
     },
   ],
   question: 'У вас есть аккаунт?',
   popupLink: 'login',
   popupLinkName: 'Войдите',
   button: 'Зарегестрироваться',
-  method: toLogin,
+  method: toRegistration,
   errorMessage: '',
 })
 
-const resetErrors = (popup) => {
-  popup.inputs.forEach((input) => {
+const resetPopupFields = (popup) => {
+  popup.inputs.forEach(input => {
+    input.value = ''
+  });
+}
+
+const resetPopupErrors = (popup) => {
+  popup.inputs.forEach(input => {
     input.error = ''
-  })
+  });
   popup.errorMessage = ''
 }
 
@@ -184,7 +275,6 @@ onMounted(async () => {
 </script>
 <style lang="less" scoped>
 @import '../assets/text.less';
-@import '../assets/colors.less';
 
 .main-section {
   display: flex;
