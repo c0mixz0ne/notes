@@ -16,13 +16,13 @@
   <PopupComponent>
     <template #title>
       <div class="popup-title">
-        {{ login.title }}
+        {{ loginData.title }}
       </div>
     </template>
     <template #content>
       <form class="popup-form">
         <InputComponent
-          v-for="(input, index) in login.inputs"
+          v-for="(input, index) in loginData.inputs"
           :key="input.title"
           :title="input.title"
           :placeholder="input.placeholder"
@@ -31,47 +31,80 @@
           :error-message="input.error"
           :id="input.id"
           :autocomplete="input.autocomplete"
+          @updateInput="updateInputValue($event, index, loginData)"
         />
-        <!-- <label for="password">Пароль</label>
-        <input placeholder="Введите пароль" id="password" type="password" autocomplete> -->
       </form>
     </template>
-    <template #action>
+    <template #action="{ isLoading }">
       <div class="popup-actions">
         <div class="popup-registration">
-          <span> {{ login.question }} </span>
+          <span> {{ loginData.question }} </span>
           <LinkComponent @click="openPopup">
-            {{ login.popupLinkName }}
+            {{ loginData.popupLinkName }}
           </LinkComponent>
         </div>
-        <ButtonComponent @click="loginAction">
-          {{ login.button }}
+        <ButtonComponent :class="{ loading: isLoading }" @click="loginData.method">
+          <span v-if="!isLoading">{{ loginData.button }}</span>
+          <span v-if="isLoading" class="loader"></span>
         </ButtonComponent>
       </div>
-      <div v-if="error" class="popup-error">Пользователь с таким логином не найден</div>
+      <div v-if="loginData.errorMessage" class="popup-error">{{ loginData.errorMessage }}</div>
     </template>
   </PopupComponent>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { usePopupStore } from '@/store/popup'
+import router from '@/router'
+
+import { ref, reactive, onMounted } from 'vue'
 import PopupComponent from '@/components/PopupComponent.vue'
 import LinkComponent from '@/components/LinkComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
 import InputComponent from '@/components/InputComponent.vue'
 
-const loginAction = () => {
-  console.log(1)
-}
+import validate from '@/utils/validate'
+import { login, auth } from '@/utils/api'
+
+const popupStore = usePopupStore()
 
 const toLogin = async () => {
-  console.log(1)
-}
+  const [email, password] = loginData.inputs
 
+  const data = {
+    email: email.value.toLowerCase(),
+    password: password.value,
+  }
+
+  const emailError = validate('email', data.email)
+  const passwordError = validate('password', data.password)
+
+  try {
+    if (emailError || passwordError) {
+      loginData.inputs[0].error = emailError
+      loginData.inputs[1].error = passwordError
+      return
+    }
+
+    resetErrors(loginData)
+    popupStore.setIsLoading(true)
+    await login(data)
+    popupStore.setIsLoading(false)
+    popupStore.setIsPopupOpen(null, false)
+    router.push('/notes')
+  } catch (err) {
+    loginData.errorMessage = err.response.data.message
+    popupStore.setIsLoading(false)
+  }
+}
 const toRegistration = async () => {
   console.log(1)
 }
 
-const login = ref({
+const updateInputValue = (value, index, popup) => {
+  popup.inputs[index].value = value
+}
+
+const loginData = reactive({
   name: 'login',
   title: 'Вход в ваш аккаунт',
   inputs: [
@@ -104,7 +137,7 @@ const login = ref({
   errorMessage: '',
 })
 
-const registration = ref({
+const registrationData = reactive({
   name: 'registration',
   title: 'Регистрация',
   inputs: [
@@ -134,8 +167,19 @@ const registration = ref({
   popupLink: 'login',
   popupLinkName: 'Войдите',
   button: 'Зарегестрироваться',
-  method: toRegistration,
+  method: toLogin,
   errorMessage: '',
+})
+
+const resetErrors = (popup) => {
+  popup.inputs.forEach((input) => {
+    input.error = ''
+  })
+  popup.errorMessage = ''
+}
+
+onMounted(async () => {
+  await auth()
 })
 </script>
 <style lang="less" scoped>

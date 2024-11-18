@@ -1,8 +1,16 @@
 <template>
   <div class="input-wrapper">
     <label for="email"> {{ title }} </label>
-    <input :placeholder="placeholder" :id="id" :type="inputType" :autocomplete="autocomplete" />
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <input
+      :class="{ error: errorMessage }"
+      :placeholder="placeholder"
+      :id="id"
+      :type="inputType"
+      :autocomplete="autocomplete"
+      :value="inputValue"
+      @input="handler"
+    />
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
   </div>
 </template>
 <script setup>
@@ -36,11 +44,18 @@ const props = defineProps({
     default: '',
   },
 })
+
+const emits = defineEmits(['updateInput'])
+
+const handler = (e) => {
+  emits('updateInput', e.target.value)
+}
 </script>
 <style lang="less" scoped>
 @import '../assets/text.less';
 
 .input-wrapper {
+  margin-bottom: 24px;
   label,
   input {
     display: block;
@@ -61,7 +76,13 @@ const props = defineProps({
     padding: 22px 28px;
     border-radius: 36px;
     outline: none;
-    margin-bottom: 24px;
+    margin-bottom: 10px;
+    &.error {
+      &:hover,
+      &:focus {
+        border-color: var(--red);
+      }
+    }
 
     &::placeholder {
       color: var(--gray);
@@ -74,8 +95,9 @@ const props = defineProps({
     }
   }
 
-  :last-child {
-    margin-bottom: 0;
+  .error-message {
+    color: var(--red);
+    padding: 0 25px;
   }
 }
 </style>

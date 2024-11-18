@@ -7,7 +7,7 @@
         </ButtonComponent>
         <slot name="title"></slot>
         <slot name="content"></slot>
-        <slot name="action"></slot>
+        <slot :isLoading="isLoading" name="action"></slot>
       </div>
     </div>
   </div>
@@ -21,12 +21,14 @@ import ButtonComponent from './ButtonComponent.vue'
 
 const popupStore = usePopupStore()
 
-const popup = popupStore.getIsPopupOpen
+const popupIsOpen = popupStore.getIsPopupOpen
 
-const isPopupOpen = computed(() => popup.isOpen)
+const isPopupOpen = computed(() => popupIsOpen.isOpen)
 
-const close = (type) => {
-  popupStore.setIsPopupOpen(type, false)
+const isLoading = computed(() => popupStore.getIsLoading)
+
+const close = (popup) => {
+  popupStore.setIsPopupOpen(popup, false)
 }
 </script>
 <style lang="less" scoped>
@@ -58,6 +60,9 @@ const close = (type) => {
 
     :deep(.popup-form) {
       margin-bottom: 40px;
+      & :last-child {
+        margin-bottom: 0;
+      }
     }
 
     :deep(.popup-actions) {
@@ -72,6 +77,14 @@ const close = (type) => {
       }
       button {
         margin-left: auto;
+      }
+      .loader {
+        border: 4px solid var(--white);
+        border-top: 4px solid var(--green-light);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
       }
     }
 
