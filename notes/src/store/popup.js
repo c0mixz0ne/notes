@@ -1,28 +1,28 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const usePopupStore = defineStore('popup', {
   state: () => ({
     isLoading: false,
     popup: {
       isOpen: false,
-      type: null
-    }
+      type: null,
+    },
   }),
   actions: {
     setIsPopupOpen(type, status) {
-      this.popup.type = type;
-      this.popup.isOpen = status;
+      this.popup.type = type
+      this.popup.isOpen = status
     },
     setIsLoading(value) {
-      this.isLoading = value;
-    }
+      this.isLoading = value
+    },
   },
   getters: {
     getIsPopupOpen(state) {
-      return state.popup;
+      return state.popup
     },
     getIsLoading(state) {
-      return state.isLoading;
-    }
-  }
-});
+      return state.isLoading
+    },
+  },
+})

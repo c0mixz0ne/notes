@@ -1,7 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import Header from '@/components/HeaderComponent.vue'
-import Container from '@/components/layout/ContainerComponent.vue';
+import Container from '@/components/layout/ContainerComponent.vue'
 </script>
 
 <template>
@@ -10,4 +10,3 @@ import Container from '@/components/layout/ContainerComponent.vue';
     <RouterView />
   </Container>
 </template>
-

@@ -1,20 +1,20 @@
 <template>
-    <div class="user">
-        <div class="user-email">login@email.ru</div>
-        <div class="user-image">
-            <img src="../assets/images/user.svg" alt="Пользователь">
-        </div>
+  <div class="user">
+    <div class="user-email">login@email.ru</div>
+    <div class="user-image">
+      <img src="../assets/images/user.svg" alt="Пользователь" />
     </div>
+  </div>
 </template>
 <style lang="less" scoped>
-.user{
+.user {
   display: flex;
   align-items: center;
   cursor: pointer;
-  .user-email{
+  .user-email {
     margin-right: 12px;
   }
-  .user-image{
+  .user-image {
     width: 56px;
     height: 56px;
     border: none;

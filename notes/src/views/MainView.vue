@@ -6,12 +6,10 @@
           <span>Мои</span>
           <span>заметки</span>
         </h1>
-        <h3>
-          Не забывай о важном, храни его в облаке.
-        </h3>
+        <h3>Не забывай о важном, храни его в облаке.</h3>
       </div>
       <div class="main-image">
-        <img src="../assets/images/main.svg" alt="Главная картинка">
+        <img src="../assets/images/main.svg" alt="Главная картинка" />
       </div>
     </section>
   </main>
@@ -23,17 +21,16 @@
     </template>
     <template #content>
       <form class="popup-form">
-
-        <InputComponent v-for="(input, index) in login.inputs"
-        :key="input.title"
-        :title="input.title"
-        :placeholder="input.placeholder"
-        :input-value="input.value"
-        :input-type="input.type"
-        :error-message="input.error"
-        :id="input.id"
-        :autocomplete="input.autocomplete"
-
+        <InputComponent
+          v-for="(input, index) in login.inputs"
+          :key="input.title"
+          :title="input.title"
+          :placeholder="input.placeholder"
+          :input-value="input.value"
+          :input-type="input.type"
+          :error-message="input.error"
+          :id="input.id"
+          :autocomplete="input.autocomplete"
         />
         <!-- <label for="password">Пароль</label>
         <input placeholder="Введите пароль" id="password" type="password" autocomplete> -->
@@ -51,29 +48,27 @@
           {{ login.button }}
         </ButtonComponent>
       </div>
-      <div v-if="error" class="popup-error">
-        Пользователь с таким логином не найден
-      </div>
+      <div v-if="error" class="popup-error">Пользователь с таким логином не найден</div>
     </template>
   </PopupComponent>
 </template>
 <script setup>
-import { ref } from 'vue';
-import PopupComponent from '@/components/PopupComponent.vue';
-import LinkComponent from '@/components/LinkComponent.vue';
-import ButtonComponent from '@/components/ButtonComponent.vue';
-import InputComponent from '@/components/InputComponent.vue';
+import { ref } from 'vue'
+import PopupComponent from '@/components/PopupComponent.vue'
+import LinkComponent from '@/components/LinkComponent.vue'
+import ButtonComponent from '@/components/ButtonComponent.vue'
+import InputComponent from '@/components/InputComponent.vue'
 
 const loginAction = () => {
-  console.log(1);
+  console.log(1)
 }
 
 const toLogin = async () => {
-  console.log(1);
+  console.log(1)
 }
 
 const toRegistration = async () => {
-  console.log(1);
+  console.log(1)
 }
 
 const login = ref({
@@ -88,7 +83,7 @@ const login = ref({
       isValid: true,
       error: '',
       id: 'email',
-      autocomplete: 'current-password'
+      autocomplete: 'current-password',
     },
     {
       title: 'Пароль',
@@ -98,15 +93,15 @@ const login = ref({
       isValid: true,
       error: '',
       id: 'password',
-      autocomplete: 'new-password'
-    }
+      autocomplete: 'new-password',
+    },
   ],
   question: 'У вас нет аккаунта?',
   popupLink: 'registration',
   popupLinkName: 'Зарегистрируйтесь',
   button: 'Войти',
   method: toLogin,
-  errorMessage: ''
+  errorMessage: '',
 })
 
 const registration = ref({
@@ -118,32 +113,30 @@ const registration = ref({
       placeholder: 'Введите Email',
       type: 'text',
       value: '',
-      error: ''
+      error: '',
     },
     {
       title: 'Пароль',
       placeholder: 'Введите пароль',
       type: 'password',
       value: '',
-      error: ''
+      error: '',
     },
     {
       title: 'Пароль ещё раз',
       placeholder: 'Введите пароль',
       type: 'password',
       value: '',
-      error: ''
-    }
+      error: '',
+    },
   ],
   question: 'У вас есть аккаунт?',
   popupLink: 'login',
   popupLinkName: 'Войдите',
   button: 'Зарегестрироваться',
   method: toRegistration,
-  errorMessage: ''
+  errorMessage: '',
 })
-
-
 </script>
 <style lang="less" scoped>
 @import '../assets/text.less';
