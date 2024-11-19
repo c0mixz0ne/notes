@@ -141,5 +141,11 @@ const getType = computed(()=> {
       padding: 0;
     }
   }
+  &:last-child{
+    margin-bottom: 0;
+  }
+  @media(max-width: 575px){
+    margin-bottom: 16px;
+  }
 }
 </style>

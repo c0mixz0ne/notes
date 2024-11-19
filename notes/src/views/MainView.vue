@@ -95,12 +95,13 @@
   </PopupComponent>
 </template>
 <script setup>
+import { reactive, onMounted, computed } from 'vue'
+
 import { usePopupStore } from '@/store/popup'
 import { useAuthStore } from '@/store/user'
 
 import router from '@/router'
 
-import { ref, reactive, onMounted, computed } from 'vue'
 import PopupComponent from '@/components/PopupComponent.vue'
 import LinkComponent from '@/components/LinkComponent.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
@@ -279,6 +280,7 @@ onMounted(async () => {
 .main-section {
   display: flex;
   justify-content: space-between;
+  min-height: calc(100svh - var(--navbar-height));
 
   .main-image {
     display: flex;
@@ -314,7 +316,7 @@ onMounted(async () => {
     }
   }
 
-  @media screen and (max-width: 1365px) {
+  @media (max-width: 1365px) {
     .main-content {
       padding-top: 106px;
       margin: 0;
@@ -326,7 +328,7 @@ onMounted(async () => {
     }
   }
 
-  @media screen and (max-width: 997px) {
+  @media (max-width: 997px) {
     flex-direction: column;
 
     .main-content {
@@ -348,8 +350,11 @@ onMounted(async () => {
     }
   }
 
-  @media screen and (max-width: 767px) {
+  @media  (max-width: 767px) {
     .main-content {
+      h3{
+        .h3-mob()
+      }
       padding-top: 20px;
     }
   }

@@ -7,7 +7,7 @@
         <LoginIcon class="login" />
         Вход
       </ButtonComponent>
-      <UserComponent v-if="isAuth" />
+      <UserComponent :email="isAuth" v-if="isAuth" />
     </nav>
   </header>
 </template>
@@ -31,6 +31,8 @@ const openPopup = (type) => {
 }
 
 const isAuth = computed(() => { return authStore.getAuthUser.email})
+console.log();
+
 </script>
 <style scoped>
 .header {
@@ -43,17 +45,17 @@ const isAuth = computed(() => { return authStore.getAuthUser.email})
     display: none;
   }
 
-  @media screen and (max-width: 1365px) {
+  @media (max-width: 1365px) {
     padding: 20px 0;
   }
 
-  @media screen and (max-width: 767px) {
+  @media  (max-width: 767px) {
     .logo {
       width: 154px;
     }
   }
 
-  @media screen and (max-width: 359px) {
+  @media  (max-width: 359px) {
     .logo {
       display: none;
     }

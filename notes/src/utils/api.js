@@ -4,17 +4,19 @@ import { useAuthStore } from '@/store/user';
 const url = import.meta.env.VITE_API_URL
 
 export const registration = async (data) => {
+  console.log(data);
+  
   await axios.post(`${url}/reg`, data)
-  login({ email: data.email, password: data.password })
+  await login({ email: data.email, password: data.password })
 }
 
 export const auth = async () => {
-  const authStore = useAuthStore()
   if (localStorage.getItem('token')) {
     const token = localStorage.getItem('token')
     const { data } = await axios.get(`${url}/auth`, {
       headers: { Authorization: `Bearer ${token}` },
     })
+    const authStore = useAuthStore()
     authStore.setAuthUser({ email: data.email })
     return data
   }
