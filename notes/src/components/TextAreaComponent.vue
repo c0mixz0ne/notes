@@ -2,20 +2,15 @@
   <div class="input">
     <label :for="id"> {{ title }} </label>
     <div class="input-wrapper">
-      <input
+      <textarea
+        :id="id"
         :class="{ error: errorMessage }"
         :placeholder="placeholder"
-        :id="id"
-        :type="getType"
-        :autocomplete="autocomplete"
+        type="text"
         :value="inputValue"
         :maxlength="maxLength"
         @input="handler"
-      />
-      <button @click="toggle" v-if="inputType === 'password'">
-        <ShowPassIcon v-if="inputType === 'password' && !isVisible" />
-        <HidePassIcon v-if="inputType === 'password' && isVisible" />
-      </button>
+      ></textarea>
     </div>
     <div class="input-service">
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
@@ -24,41 +19,29 @@
   </div>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
-import ShowPassIcon from '@/assets/svg-components/ShowPassIcon.vue'
-import HidePassIcon from '@/assets/svg-components/HidePassIcon.vue'
-
+import { computed } from 'vue'
 const props = defineProps({
   title: {
     type: String,
-    required: true,
+    default: 'Введите значение',
   },
   placeholder: {
     type: String,
-    required: true,
+    default: 'Введите значение',
   },
   inputValue: {
     type: String,
-    required: true,
-  },
-  inputType: {
-    type: String,
-    required: true,
   },
   errorMessage: {
     type: String,
-    default: '',
+    default: 'Не правильно заполненные данные',
+  },
+  maxLength: {
+    type: Number,
   },
   id: {
     type: String,
     default: '',
-  },
-  autocomplete: {
-    type: String,
-    default: '',
-  },
-  maxLength: {
-    type: Number
   },
 })
 
@@ -68,14 +51,8 @@ const handler = (e) => {
   emits('updateInput', e.target.value)
 }
 
-const isVisible = ref(false)
-
-const toggle = () => {
-  isVisible.value = !isVisible.value
-}
-
-const getType = computed(() => {
-  return props.inputType === 'password' ? (isVisible.value ? 'text' : 'password') : 'text'
+computed(() => {
+  return props.errorMessage.length
 })
 
 const currentLength = computed(() => {
@@ -84,11 +61,10 @@ const currentLength = computed(() => {
 </script>
 <style lang="less" scoped>
 @import '../assets/text.less';
-
 .input {
   margin-bottom: 24px;
   label,
-  input {
+  textarea {
     display: block;
   }
 
@@ -99,7 +75,7 @@ const currentLength = computed(() => {
     color: var(--gray);
   }
 
-  input {
+  textarea {
     background-color: var(--white);
     width: 100%;
     border: 2px solid transparent;
@@ -108,6 +84,15 @@ const currentLength = computed(() => {
     border-radius: 36px;
     outline: none;
     margin-bottom: 10px;
+    min-height: 200px;
+    resize: none;
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
     &.error {
       &:hover,
       &:focus {
@@ -159,9 +144,11 @@ const currentLength = computed(() => {
       padding: 0;
     }
   }
+
   &:last-child {
     margin-bottom: 0;
   }
+
   @media (max-width: 575px) {
     margin-bottom: 16px;
   }

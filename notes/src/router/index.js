@@ -19,25 +19,21 @@ const router = createRouter({
       component: () => import('../views/NotesView.vue'),
       meta: {
         title: 'Notes : List',
-        requiresAuth: true
+        requiresAuth: true,
       },
     },
   ],
-});
+})
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('token');
+  const isAuthenticated = localStorage.getItem('token')
   if (isAuthenticated && to.path === '/') {
-    next({ path: '/notes' });
+    next({ path: '/notes' })
+  } else if (to.matched.some((record) => record.meta.requiresAuth) && !isAuthenticated) {
+    next({ path: '/' })
+  } else {
+    next()
   }
-
-  else if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
-    next({ path: '/' });
-  }
-
-  else {
-    next();
-  }
-});
+})
 
 export default router

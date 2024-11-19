@@ -34,9 +34,9 @@ const close = () => {
   emits('close-popup')
 }
 
-const overflowHidden = onMounted(() => document.body.style.overflow = 'hidden')
+onMounted(() => (document.body.style.overflow = 'hidden'))
 
-const overflowauto = onUnmounted(() => document.body.style.overflow = 'auto')
+onUnmounted(() => (document.body.style.overflow = 'auto'))
 </script>
 <style lang="less" scoped>
 @import '../assets/text.less';
@@ -49,6 +49,7 @@ const overflowauto = onUnmounted(() => document.body.style.overflow = 'auto')
   height: 100%;
   background-color: rgb(var(--dark-middle-opacity), 0.7);
   overflow: auto;
+  z-index: 4;
   .popup {
     position: absolute;
     top: 50%;
@@ -94,7 +95,7 @@ const overflowauto = onUnmounted(() => document.body.style.overflow = 'auto')
         width: 30px;
         height: 30px;
         animation: spin 1s linear infinite;
-        margin:0 auto;
+        margin: 0 auto;
       }
     }
 
@@ -106,36 +107,36 @@ const overflowauto = onUnmounted(() => document.body.style.overflow = 'auto')
       border-radius: 24px;
       .text-small();
     }
-    @media (max-width: 767px){
+    @media (max-width: 767px) {
       padding: 56px;
     }
-    @media(max-width: 575px){
+    @media (max-width: 575px) {
       :deep(.popup-title) {
         .h2mob();
         margin-bottom: 28px;
         padding-right: 56px;
       }
-      :deep(.popup-form){
+      :deep(.popup-form) {
         margin-bottom: 28px;
       }
       :deep(.popup-actions) {
         flex-direction: column;
-        button{
+        button {
           width: 100%;
-          order:1;
-          span{
+          order: 1;
+          span {
             width: 100%;
             text-align: center;
           }
         }
-        .popup-registration{
+        .popup-registration {
           text-align: center;
           margin-top: 12px;
-          order:2;
-          span{
+          order: 2;
+          span {
             .text-small-mob();
           }
-          .link{
+          .link {
             .text-small-bold-mob();
           }
         }
@@ -144,13 +145,13 @@ const overflowauto = onUnmounted(() => document.body.style.overflow = 'auto')
       width: 100%;
       padding-top: 42px;
       padding-bottom: 42px;
-      top:0;
+      top: 0;
       left: 0;
       transform: unset;
       position: relative;
       display: flex;
       flex-direction: column;
-      justify-content:center;
+      justify-content: center;
       min-height: 100%;
     }
   }

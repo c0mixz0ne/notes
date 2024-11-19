@@ -30,9 +30,10 @@ const openPopup = (type) => {
   popupStore.setIsPopupOpen(type, true)
 }
 
-const isAuth = computed(() => { return authStore.getAuthUser.email})
-console.log();
-
+const isAuth = computed(() => {
+  return authStore.getAuthUser.email
+})
+console.log()
 </script>
 <style scoped>
 .header {
@@ -49,13 +50,13 @@ console.log();
     padding: 20px 0;
   }
 
-  @media  (max-width: 767px) {
+  @media (max-width: 767px) {
     .logo {
       width: 154px;
     }
   }
 
-  @media  (max-width: 359px) {
+  @media (max-width: 359px) {
     .logo {
       display: none;
     }

@@ -1,31 +1,29 @@
 <template>
   <div class="user" @click="logoutToggler">
-    <div class="user-email"> {{ email }} </div>
+    <div class="user-email">{{ email }}</div>
     <div class="user-image">
       <img src="../assets/images/user.svg" alt="Пользователь" />
     </div>
     <div @click.stop class="user-menu" v-if="isLogout">
-      <LinkComponent @click="logoutHandler">
-          Выйти
-      </LinkComponent>
+      <LinkComponent @click="logoutHandler"> Выйти </LinkComponent>
     </div>
   </div>
 </template>
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import LinkComponent from './LinkComponent.vue';
-import { logout } from '@/utils/api';
-import router from '@/router';
-const props = defineProps({
+import { ref, onMounted, onUnmounted } from 'vue'
+import LinkComponent from './LinkComponent.vue'
+import { logout } from '@/utils/api'
+import router from '@/router'
+defineProps({
   email: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const isLogout = ref(false)
 
-const logoutToggler = () => {  
+const logoutToggler = () => {
   isLogout.value = !isLogout.value
 }
 
@@ -36,25 +34,29 @@ const logoutHandler = () => {
 }
 
 const handleClickOutside = (event) => {
-  const userElement = document.querySelector('.user');
-  const userMenuElement = document.querySelector('.user-menu');
-  
-  if (userElement && !userElement.contains(event.target) && 
-      userMenuElement && !userMenuElement.contains(event.target)) {
-    isLogout.value = false;
+  const userElement = document.querySelector('.user')
+  const userMenuElement = document.querySelector('.user-menu')
+
+  if (
+    userElement &&
+    !userElement.contains(event.target) &&
+    userMenuElement &&
+    !userMenuElement.contains(event.target)
+  ) {
+    isLogout.value = false
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
+  document.addEventListener('click', handleClickOutside)
 })
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener('click', handleClickOutside)
 })
-
 </script>
 <style lang="less" scoped>
+@import '../assets/text.less';
 .user {
   display: flex;
   align-items: center;
@@ -65,10 +67,11 @@ onUnmounted(() => {
     text-overflow: ellipsis;
     overflow: hidden;
     max-width: 215px;
-    @media (max-width: 767px){
+    .text-small();
+    @media (max-width: 767px) {
       max-width: 90px;
     }
-    @media (max-width: 359px){
+    @media (max-width: 359px) {
       max-width: 160px;
     }
   }
@@ -82,16 +85,16 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
   }
-  .user-menu{
+  .user-menu {
     position: absolute;
     background-color: var(--dark-middle);
     padding: 40px;
     border-radius: 12px;
     right: 0px;
-    top:80px;
-    box-shadow: 0px 15px 46px -10px rgba(0, 0, 0, 0.60);
+    top: 80px;
+    box-shadow: 0px 15px 46px -10px rgba(0, 0, 0, 0.6);
     z-index: 2;
-    :after{
+    :after {
       background-color: var(--dark-middle);
       position: absolute;
       content: '';

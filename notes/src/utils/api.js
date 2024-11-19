@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { useAuthStore } from '@/store/user';
+import { useAuthStore } from '@/store/user'
 
 const url = import.meta.env.VITE_API_URL
 
 export const registration = async (data) => {
-  console.log(data);
-  
+  console.log(data)
+
   await axios.post(`${url}/reg`, data)
   await login({ email: data.email, password: data.password })
 }

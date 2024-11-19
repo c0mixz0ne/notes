@@ -55,9 +55,9 @@
     background-color: var(--gray);
     cursor: not-allowed;
   }
-  @media(max-width: 575px){
-    &.close-popup{
-      top:12px;
+  @media (max-width: 575px) {
+    &.close-popup {
+      top: 12px;
       right: 12px;
     }
   }
