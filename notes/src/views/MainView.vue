@@ -1,8 +1,8 @@
 <template>
-  <main>
+  <main role="main">
     <section class="main-section">
       <div class="main-content">
-        <h1>
+        <h1 role="banner" aria-level="1">
           <span>Мои</span>
           <span>заметки</span>
         </h1>
@@ -34,6 +34,7 @@
           :id="input.id"
           :autocomplete="input.autocomplete"
           @updateInput="updateInputValue($event, index, loginData)"
+          @submit="loginData.method"
         />
       </form>
     </template>
@@ -74,6 +75,7 @@
           :id="input.id"
           :autocomplete="input.autocomplete"
           @updateInput="updateInputValue($event, index, registrationData)"
+          @submit="registrationData.method"
         />
       </form>
     </template>

@@ -2,7 +2,7 @@
   <header class="header">
     <LogoIcon />
     <LogoMobIcon />
-    <nav>
+    <nav role="navigation">
       <ButtonComponent @click="openPopup('login')" v-if="!isAuth">
         <LoginIcon class="login" />
         Вход

@@ -11,11 +11,12 @@
         :value="inputValue"
         :maxlength="maxLength"
         @input="handler"
+        @keydown.enter="submit"
       />
-      <button @click="toggle" v-if="inputType === 'password'">
+      <div @submit.prevent @click="toggle" v-if="inputType === 'password'">
         <ShowPassIcon v-if="inputType === 'password' && !isVisible" />
         <HidePassIcon v-if="inputType === 'password' && isVisible" />
-      </button>
+      </div>
     </div>
     <div class="input-service">
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
@@ -62,10 +63,14 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['updateInput'])
+const emits = defineEmits(['updateInput', 'submit'])
 
 const handler = (e) => {
   emits('updateInput', e.target.value)
+}
+
+const submit = () => {
+  emits('submit')
 }
 
 const isVisible = ref(false)
@@ -143,7 +148,7 @@ const currentLength = computed(() => {
 
   .input-wrapper {
     position: relative;
-    button {
+    div {
       display: flex;
       align-items: center;
       justify-content: center;

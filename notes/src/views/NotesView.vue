@@ -38,6 +38,7 @@
               :autocomplete="notesData.inputs[1].autocomplete"
               :max-length="notesData.inputs[1].length"
               @updateInput="updateInputValue($event, 1, notesData)"
+              @submit="notesData.method"
             />
           </form>
         </template>

@@ -10,6 +10,7 @@
         :value="inputValue"
         :maxlength="maxLength"
         @input="handler"
+        @keydown.enter="submit"
       ></textarea>
     </div>
     <div class="input-service">
@@ -45,15 +46,15 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['updateInput'])
+const emits = defineEmits(['updateInput', 'submit'])
 
 const handler = (e) => {
   emits('updateInput', e.target.value)
 }
 
-computed(() => {
-  return props.errorMessage.length
-})
+const submit = () => {
+  emits('submit')
+}
 
 const currentLength = computed(() => {
   return props.inputValue.length
